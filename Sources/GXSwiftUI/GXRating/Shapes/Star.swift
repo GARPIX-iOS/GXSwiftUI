@@ -53,7 +53,10 @@ public struct Star: Shape {
         path.closeSubpath()
         return path
     }
-
+    
+    /// Функция переводит градусы в радианы
+    /// - Parameter degree: градусы
+    /// - Returns: радианы
     private func degree2Radian(_ degree: CGFloat) -> CGFloat {
         return CGFloat.pi * degree / 180
     }
