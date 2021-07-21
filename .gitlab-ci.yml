@@ -1,4 +1,3 @@
-
 image: ruby:latest
 
 stages:
@@ -13,5 +12,6 @@ before_script:
 build:
   stage: build
   script:
-    - gem install -n /usr/local/bin jazzy
-    - jazzy --min-acl private
+ #   - gem install -n /usr/local/bin jazzy
+ #   - jazzy --min-acl private
+     - echo "test message"
