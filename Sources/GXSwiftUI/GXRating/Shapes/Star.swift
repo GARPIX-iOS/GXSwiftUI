@@ -57,7 +57,15 @@ public struct Star: Shape {
     private func degree2Radian(_ degree: CGFloat) -> CGFloat {
         return CGFloat.pi * degree / 180
     }
-
+    
+    /// Функция возвращает массив точек для построения звезды
+    /// - Parameters:
+    ///   - sides: количество лучей звезды
+    ///   - x: х - координата
+    ///   - y: у - координата
+    ///   - radius: радиус
+    ///   - adjustment: необязательный параметр - смещение в градусах, чтобы повернуть звезду
+    /// - Returns: массив точек
     private func polygonPointArray(sides: Int,
                            x: CGFloat,
                            y: CGFloat,
