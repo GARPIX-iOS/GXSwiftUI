@@ -1,0 +1,17 @@
+
+image: ruby:latest
+
+stages:
+  - build
+ # - pages
+
+before_script:
+  - ruby -v  
+
+
+
+build:
+  stage: build
+  script:
+    - gem install -n /usr/local/bin jazzy
+    - jazzy --min-acl private
