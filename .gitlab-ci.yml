@@ -1,17 +1,18 @@
 image: ruby:latest
-
 stages:
-  - build
- # - pages
+  - deploy
 
 before_script:
   - ruby -v  
 
-
-
-build:
-  stage: build
+pages:
+  stage: deploy
   script:
- #   - gem install -n /usr/local/bin jazzy
- #   - jazzy --min-acl private
-     - echo "test message"
+    - jazzy --min-acl private
+  artifacts:
+    paths:
+      - public
+  only:
+    - tags
+    - master
+
