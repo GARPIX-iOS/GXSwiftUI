@@ -10,7 +10,8 @@ import SwiftUI
 import PhotosUI
 
 /// Структура для отображения PHPickerViewController из UIKit, позволяет выбирать разные типы медиа файлов из пользовательской библиотеке  по отдельности или все вместе.
-struct MediaPicker: UIViewControllerRepresentable {
+@available(iOS 14, *)
+public struct MediaPicker: UIViewControllerRepresentable {
     /// Количество медиа-файлов, которое можно выбрать за раз
     /// Чтобы выбрать неограниченное количество файлов - укажи filesCount = 0
     var filesCount: Int
@@ -34,7 +35,7 @@ struct MediaPicker: UIViewControllerRepresentable {
     ///   - livePhotoResult: Массив живых фото, которые передаются из библиотеки, необязательный параметр
     ///   - videoResult: Массив урлов видео файлов, которые передаются из библиотеки, необязательный параметр
     ///   - isPresented: Переменная для отображения/закрытия библиотеки
-    init(
+   public init(
         filesCount: Int = 0,
         pickerFilter: [PHPickerFilter] = [.images],
         imageResult: Binding<[UIImage]> = .constant([]),
@@ -61,7 +62,7 @@ struct MediaPicker: UIViewControllerRepresentable {
     /// Функция для создания UIViewController, вызывается один раз
     /// - Parameter context: Контекст, который мы помещаем в UIViewController
     /// - Returns: UIViewController с нашим контекстом - PHPickerViewController
-    func makeUIViewController(context: Context) -> some UIViewController {
+    public func makeUIViewController(context: Context) -> some UIViewController {
         let photoPickerViewController = PHPickerViewController(configuration: configurePicker())
         photoPickerViewController.delegate = context.coordinator
         return photoPickerViewController
@@ -71,17 +72,17 @@ struct MediaPicker: UIViewControllerRepresentable {
     /// - Parameters:
     ///   - uiViewController: UIViewController
     ///   - context: Контекст, который мы помещаем в UIViewController
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+    public func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
     }
     
     /// Функция создает координатор для связи с контроллером
     /// - Returns: Координатор
-    func makeCoordinator() -> Coordinator {
+    public func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
     
     
-    class Coordinator: PHPickerViewControllerDelegate {
+    public class Coordinator: PHPickerViewControllerDelegate {
         private let parent: MediaPicker
         
         init(_ parent: MediaPicker) {
@@ -132,7 +133,7 @@ struct MediaPicker: UIViewControllerRepresentable {
         /// - Parameters:
         ///   - picker: PHPickerViewController
         ///   - results: Выбранные медиа-файлы из библиотеки
-        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        public func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
             getFiles(from: results)
             parent.isPresented = false
         }
