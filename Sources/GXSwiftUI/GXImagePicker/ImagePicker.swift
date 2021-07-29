@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-/// Структура для отображения фото галереи
+/// Структура для отображения фото галереи, за раз можно выбрать только 1 изображение
 public struct ImagePicker: UIViewControllerRepresentable {
     public class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
         let parent: ImagePicker
