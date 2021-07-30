@@ -45,6 +45,15 @@ public struct PhotoPicker: UIViewControllerRepresentable {
     /// воспользовавшись ImageUrlHelper (имя, размер, дата создания файла)
     var handlePickedImage: (URL) -> Void
     
+    /// Init
+    /// - Parameters:
+    ///   - image: Изображение, которое берется с камеры устройства
+    ///   - handlePickedImage: Урл файла, из которого при необходимости можно посмотреть интересующие свойства файла
+    public init(image: UIImage?, handlePickedImage: @escaping (URL) -> Void) {
+        self.image = image
+        self.handlePickedImage = handlePickedImage
+    }
+    
     /// Функция создает координатор для связи с контроллером
     /// - Returns: Координатор
     public func makeCoordinator() -> Coordinator {

@@ -1,0 +1,18 @@
+image: ruby:latest
+stages:
+  - deploy
+
+before_script:
+  - ruby -v  
+
+pages:
+  stage: deploy
+  script:
+    - jazzy --min-acl private
+  artifacts:
+    paths:
+      - public
+  only:
+    - tags
+    - master
+
