@@ -49,8 +49,8 @@ public struct PhotoPicker: UIViewControllerRepresentable {
     /// - Parameters:
     ///   - image: Изображение, которое берется с камеры устройства
     ///   - handlePickedImage: Урл файла, из которого при необходимости можно посмотреть интересующие свойства файла
-    public init(image: UIImage?, handlePickedImage: @escaping (URL) -> Void) {
-        self.image = image
+    public init(image: Binding<UIImage?>, handlePickedImage: @escaping (URL) -> Void) {
+        self._image = image
         self.handlePickedImage = handlePickedImage
     }
     
