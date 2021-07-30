@@ -35,7 +35,7 @@ public struct MediaPicker: UIViewControllerRepresentable {
     ///   - livePhotoResult: Массив живых фото, которые передаются из библиотеки, необязательный параметр
     ///   - videoResult: Массив урлов видео файлов, которые передаются из библиотеки, необязательный параметр
     ///   - isPresented: Переменная для отображения/закрытия библиотеки
-   public init(
+    public init(
         filesCount: Int = 0,
         pickerFilter: [PHPickerFilter] = [.images],
         imageResult: Binding<[UIImage]> = .constant([]),
@@ -84,9 +84,44 @@ public struct MediaPicker: UIViewControllerRepresentable {
     
     public class Coordinator: PHPickerViewControllerDelegate {
         private let parent: MediaPicker
+        /// Строковая переменная
+        private var videoType = "com.apple.quicktime-movie"
         
         init(_ parent: MediaPicker) {
             self.parent = parent
+        }
+        
+        fileprivate func getUIImages(_ mediaItem: PHPickerResult) -> Progress {
+            return mediaItem.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] newImage, error in
+                if let error = error {
+                    print("Can't load image \(error.localizedDescription)")
+                } else if let image = newImage as? UIImage {
+                    /// если да, то добавляем изображение в массив изображений
+                    self?.parent.imageResult.append(image)
+                }
+            }
+        }
+        
+        fileprivate func getLivePhotos(_ mediaItem: PHPickerResult) -> Progress {
+            return mediaItem.itemProvider.loadObject(ofClass: PHLivePhoto.self) { [weak self] newLivePhoto, error in
+                if let error = error {
+                    print("Can't load live photo \(error.localizedDescription)")
+                } else if let livePhoto = newLivePhoto as? PHLivePhoto {
+                    /// если да, то добавляем его в массив живых фотографий
+                    self?.parent.livePhotoResult.append(livePhoto)
+                }
+            }
+        }
+        
+        fileprivate func getVideoUrls(_ mediaItem: PHPickerResult) {
+            mediaItem.itemProvider.loadItem(forTypeIdentifier: videoType, options: nil) { [weak self] url, error in
+                if let error = error {
+                    print("Can't load video \(error.localizedDescription)")
+                } else if let videoUrl = url as? URL {
+                    /// если да, добавляем его урл в соответствующий массив
+                    self?.parent.videoResult.append(videoUrl)
+                }
+            }
         }
         
         /// Функция для обработки выбранных пользователем файлов из библиотеки
@@ -95,34 +130,13 @@ public struct MediaPicker: UIViewControllerRepresentable {
             for mediaItem in results {
                 /// проверяем, является ли файл - изображением/картинкой
                 if mediaItem.itemProvider.canLoadObject(ofClass: UIImage.self) {
-                    mediaItem.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] newImage, error in
-                        if let error = error {
-                            print("Can't load image \(error.localizedDescription)")
-                        } else if let image = newImage as? UIImage {
-                            /// если да, то добавляем изображение в массив изображений
-                            self?.parent.imageResult.append(image)
-                        }
-                    }
+                    getUIImages(mediaItem)
                     /// проверяем, является ли файл живой фотографией
                 } else if mediaItem.itemProvider.canLoadObject(ofClass: PHLivePhoto.self) {
-                    mediaItem.itemProvider.loadObject(ofClass: PHLivePhoto.self) { [weak self] newLivePhoto, error in
-                        if let error = error {
-                            print("Can't load live photo \(error.localizedDescription)")
-                        } else if let livePhoto = newLivePhoto as? PHLivePhoto {
-                            /// если да, то добавляем его в массив живых фотографий
-                            self?.parent.livePhotoResult.append(livePhoto)
-                        }
-                    }
+                    getLivePhotos(mediaItem)
                     /// проверяем, является ли файл видео файлом
-                } else if mediaItem.itemProvider.hasItemConformingToTypeIdentifier("com.apple.quicktime-movie") {
-                    mediaItem.itemProvider.loadItem(forTypeIdentifier: "com.apple.quicktime-movie", options: nil) { [weak self] url, error in
-                        if let error = error {
-                            print("Can't load video \(error.localizedDescription)")
-                        } else if let videoUrl = url as? URL {
-                            /// если да, добавляем его урл в соответствующий массив
-                            self?.parent.videoResult.append(videoUrl)
-                        }
-                    }
+                } else if mediaItem.itemProvider.hasItemConformingToTypeIdentifier(videoType) {
+                    getVideoUrls(mediaItem)
                 } else {
                     print("Can't load asset")
                 }
